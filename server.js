@@ -1,4 +1,6 @@
 import express from 'express';
+import {busquedaManwha, nuevoId} from './logica.js'
+import {manhwas} from './datos.js'
 
 const app = express();
 app.use(express.json());
@@ -10,44 +12,11 @@ app.get('/', (req, res) => {
   res.send('Bienvenido a OlympusScan');
 });
 
-const manhwas = [
-    {
-        id: 1,
-        titulo: 'Solo Leveling',
-        autor: 'Chugong',
-        estado: 'Finalizado',
-        capitulos: 200
-    },
 
-    {
-        id: 2,
-        titulo: 'The Beginning After The End',
-        autor: 'TurtleMe',
-        estado: 'En emisión',
-        capitulos: 220
-    }
-];
 
 manhwaRouter.get('/', (req, res) => {
     res.json(manhwas)
 });
-
-function busquedaManwha(manhwa, id){
-    const cantManhwas = manhwa.length
-    let contador = 0
-    while (contador < cantManhwas){
-        if (manhwa[contador].id === id){
-            return manhwa[contador]
-        }
-        contador += 1
-    }
-    return null
-}
-
-function nuevoId(manhwas){
-    let nuevoID = manhwas[manhwas.length - 1].id + 1
-    return nuevoID
-}
 
 
 manhwaRouter.get('/:id', (req, res) => {
