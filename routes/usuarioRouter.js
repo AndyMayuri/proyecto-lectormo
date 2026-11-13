@@ -1,3 +1,9 @@
 import express from 'express';
-import {busquedaManwhaPorId, nuevoId, busquedaManwhaPorGenero, busquedaManwhaPorTitulo} from './logica.js'
-import {manhwas} from './data/datos.js'
+
+import {} from '../controllers/usuarioController.js';
+
+const usuarioRouter = express.Router();
+
+
+
+export default usuarioRouter;

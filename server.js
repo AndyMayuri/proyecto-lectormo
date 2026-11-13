@@ -1,6 +1,7 @@
 import express from 'express';
 
 import manhwaRouter from './routes/manhwaRouter.js';
+import usuarioRouter from './routes/usuarioRouter.js';
 
 const app = express();
 
