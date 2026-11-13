@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 // Rutas de la API
 app.use('/api/manhwas', manhwaRouter);
+app.use('/api/usuario', usuarioRouter);
 
 const PORT = 3000;
 

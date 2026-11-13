@@ -1,9 +1,9 @@
 import express from 'express';
 
-import {} from '../controllers/usuarioController.js';
+import {agregarNuevoUsuario} from '../controllers/usuarioController.js';
 
 const usuarioRouter = express.Router();
 
-
+usuarioRouter.post('/', agregarNuevoUsuario);
 
 export default usuarioRouter;
