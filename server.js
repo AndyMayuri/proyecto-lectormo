@@ -12,8 +12,6 @@ app.get('/', (req, res) => {
   res.send('Bienvenido a OlympusScan');
 });
 
-
-
 manhwaRouter.get('/', (req, res) => {
     res.json(manhwas)
 });
