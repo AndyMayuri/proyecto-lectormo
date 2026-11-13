@@ -33,3 +33,8 @@ export function agregarNuevoUsuario(req, res) {
 
     return res.status(201).json(usuarioSinPassword);
 }
+
+export function inicioSesion(req, res){
+    req.body.nombre
+    req.body.email
+}
