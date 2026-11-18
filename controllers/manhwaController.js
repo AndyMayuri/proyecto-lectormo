@@ -1,5 +1,6 @@
 import {busquedaManwhaPorId, nuevoId, busquedaManwhaPorGenero, busquedaManwhaPorTitulo} from '../logica.js'
 import {manhwas} from '../data/datos.js'
+import { supabase } from '../config/supabase.js';
 
 
 // Obtener todos los manhwas
@@ -20,58 +21,83 @@ export async function obtenerManhwas(req, res) {
 }
 
 // Obtener manhwa por ID
-export function obtenerManhwaPorId(req, res) {
+export async function obtenerManhwaPorId(req, res) {
     const id = Number(req.params.id);
 
-    const manhwaEncontrado = busquedaManwhaPorId(manhwas, id);
+    const { data, error } = await supabase
+        .from('manhwas')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-    if (manhwaEncontrado === null) {
+    if (error) {
+        if (error.code === 'PGRST116') {
         return res.status(404).json({
             mensaje: 'Manhwa no encontrado'
         });
+        }
+
+        return res.status(500).json({
+            mensaje: 'Error al consultar el manhwa',
+            error: error.message
+        });
     }
 
-    return res.status(200).json(manhwaEncontrado);
+    return res.status(200).json(data);
 }
 
 // Obtener manhwas por género
-export function obtenerManwhasPorGenero(req, res) {
+export async function obtenerManwhasPorGenero(req, res) {
     const genero = req.params.genero;
 
-    const manhwasEncontrados =
-        busquedaManwhaPorGenero(manhwas, genero);
+    const { data, error } = await supabase
+        .from('manhwas')
+        .select('*')
+        .contains('genero', [genero]);
 
-    if (manhwasEncontrados.length === 0) {
-        return res.status(404).json({
-            mensaje: 'No se encontraron manhwas de ese género'
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar los manhwas',
+            error: error.message
         });
     }
 
-    return res.status(200).json(manhwasEncontrados);
-}
+    if (data.length === 0) {
+        return res.status(404).json({
+            mensaje: 'No se encontraron manhwas con ese género'
+        });
+    }
 
+    return res.status(200).json(data);
+}
 // Obtener manhwas por título
-export function obtenerManhwasPorTitulo(req, res) {
+export async function obtenerManhwasPorTitulo(req, res) {
     const titulo = req.params.titulo;
 
-    const manhwasEncontrados =
-        busquedaManwhaPorTitulo(manhwas, titulo);
+    const { data, error } = await supabase
+        .from('manhwas')
+        .select('*')
+        .ilike('titulo', `%${titulo}%`);
 
-    if (manhwasEncontrados.length === 0) {
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar los manhwas',
+            error: error.message
+        });
+    }
+
+    if (data.length === 0) {
         return res.status(404).json({
             mensaje: 'Manhwa no encontrado'
         });
     }
 
-    return res.status(200).json(manhwasEncontrados);
+    return res.status(200).json(data);
 }
 
 // Agregar un manhwa
-export function agregarManhwa(req, res) {
-    const id = nuevoId(manhwas);
-
+export async function agregarManhwa(req, res) {
     const nuevoManhwa = {
-        id: id,
         titulo: req.body.titulo,
         autor: req.body.autor,
         estado: req.body.estado,
@@ -79,9 +105,19 @@ export function agregarManhwa(req, res) {
         genero: req.body.genero
     };
 
-    manhwas.push(nuevoManhwa);
+    const { data, error } = await supabase
+        .from('manhwas')
+        .insert([nuevoManhwa])
+        .select()
+        .single();
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al agregar el manhwa',
+            error: error.message
+            });
+    }
 
-    return res.status(201).json(nuevoManhwa);
+    return res.status(201).json(data);
 }
 
 // Actualizar estado
