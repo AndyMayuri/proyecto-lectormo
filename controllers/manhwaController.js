@@ -120,17 +120,10 @@ export async function agregarManhwa(req, res) {
     return res.status(201).json(data);
 }
 
+
 // Actualizar estado
-export function actualizarEstado(req, res) {
+export async function actualizarEstado(req, res) {
     const id = Number(req.params.id);
-
-    const manhwaEncontrado = busquedaManwhaPorId(manhwas, id);
-
-    if (manhwaEncontrado === null) {
-        return res.status(404).json({
-            mensaje: 'Manhwa no encontrado'
-        });
-    }
 
     if (!req.body.estado) {
         return res.status(400).json({
@@ -138,10 +131,29 @@ export function actualizarEstado(req, res) {
         });
     }
 
-    manhwaEncontrado.estado = req.body.estado;
+    const { data, error } = await supabase
+        .from('manhwas')
+        .update({ estado: req.body.estado })
+        .eq('id', id)
+        .select()
+        .single();
 
-    return res.status(200).json(manhwaEncontrado);
+    if (error) {
+        if (error.code === 'PGRST116') {
+            return res.status(404).json({
+                mensaje: 'Manhwa no encontrado'
+            });
+        }
+
+        return res.status(500).json({
+            mensaje: 'Error al actualizar el manhwa',
+            error: error.message
+        });
+    }
+
+    return res.status(200).json(data);
 }
+
 
 // Eliminar manhwa
 export function eliminarManhwa(req, res) {
