@@ -3,8 +3,20 @@ import {manhwas} from '../data/datos.js'
 
 
 // Obtener todos los manhwas
-export function obtenerManhwas(req, res) {
-    return res.status(200).json(manhwas);
+export async function obtenerManhwas(req, res) {
+    
+    const { data, error } = await supabase
+        .from('manhwas')
+        .select('*');
+
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al obtener los manhwas',
+            error: error.message
+        });
+    }
+
+    return res.status(200).json(data);
 }
 
 // Obtener manhwa por ID
