@@ -1,14 +1,3 @@
-import {
-    busquedaManwhaPorId, 
-    nuevoId,
-    validarCamposUsuario,
-    busquedaManwhaPorGenero, 
-    busquedaManwhaPorTitulo
-} from '../utilities/logica.js'
-import {manhwas} from '../data/datos.js'
-import {usuarios} from '../data/usuarios.js'
-
-
 import { supabase } from '../config/supabase.js';
 
 // Crear una nueva cuenta

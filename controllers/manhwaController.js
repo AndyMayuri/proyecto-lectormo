@@ -1,4 +1,3 @@
-import {busquedaManwhaPorId, nuevoId, busquedaManwhaPorGenero, busquedaManwhaPorTitulo} from '../utilities/logica.js'
 import { supabase } from '../config/supabase.js';
 
 // Obtener todos los manhwas
