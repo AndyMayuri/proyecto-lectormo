@@ -1,7 +1,5 @@
-import {busquedaManwhaPorId, nuevoId, busquedaManwhaPorGenero, busquedaManwhaPorTitulo} from '../logica.js'
-import {manhwas} from '../data/datos.js'
+import {busquedaManwhaPorId, nuevoId, busquedaManwhaPorGenero, busquedaManwhaPorTitulo} from '../utilities/logica.js'
 import { supabase } from '../config/supabase.js';
-
 
 // Obtener todos los manhwas
 export async function obtenerManhwas(req, res) {
@@ -154,22 +152,29 @@ export async function actualizarEstado(req, res) {
     return res.status(200).json(data);
 }
 
-
 // Eliminar manhwa
-export function eliminarManhwa(req, res) {
+export async function eliminarManhwa(req, res) {
     const id = Number(req.params.id);
 
-    const manhwaEncontrado = busquedaManwhaPorId(manhwas, id);
+    const { data, error } = await supabase
+        .from('manhwas')
+        .delete()
+        .eq('id', id)
+        .select()
+        .single();
 
-    if (manhwaEncontrado === null) {
-        return res.status(404).json({
-            mensaje: 'Manhwa no encontrado'
+    if (error) {
+        if (error.code === 'PGRST116') {
+            return res.status(404).json({
+                mensaje: 'Manhwa no encontrado'
+            });
+        }
+
+        return res.status(500).json({
+            mensaje: 'Error al eliminar el manhwa',
+            error: error.message
         });
     }
-
-    const indice = manhwas.indexOf(manhwaEncontrado);
-
-    manhwas.splice(indice, 1);
 
     return res.status(204).end();
 }

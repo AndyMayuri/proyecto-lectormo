@@ -2,6 +2,8 @@ import express from 'express';
 
 import manhwaRouter from './routes/manhwaRouter.js';
 import usuarioRouter from './routes/usuarioRouter.js';
+import bibliotecaRouter from './routes/bibliotecaRouter.js';
+import { verificarToken } from './middlewares/verificarToken.js';
 
 const app = express();
 
@@ -15,6 +17,17 @@ app.get('/', (req, res) => {
 // Rutas de la API
 app.use('/api/manhwas', manhwaRouter);
 app.use('/api/usuario', usuarioRouter);
+
+app.get('/api/prueba-privada', verificarToken, (req, res) => {
+    return res.status(200).json({
+        mensaje: 'Acceso autorizado',
+        usuario: {
+            id: req.usuario.id,
+            email: req.usuario.email
+        }
+    });
+});
+
 
 const PORT = 3000;
 
