@@ -12,3 +12,18 @@ export const supabase = createClient(
     supabaseUrl,
     supabaseKey
 );
+
+
+export function crearClienteAutenticado(token) {
+    return createClient(
+        supabaseUrl,
+        supabaseKey,
+        {
+            global: {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        }
+    );
+}

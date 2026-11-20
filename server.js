@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
 // Rutas de la API
 app.use('/api/manhwas', manhwaRouter);
 app.use('/api/usuario', usuarioRouter);
+app.use('/api/biblioteca', bibliotecaRouter);
 
 app.get('/api/prueba-privada', verificarToken, (req, res) => {
     return res.status(200).json({
